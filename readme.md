@@ -29,13 +29,13 @@ This method receives your api key and app id, and initializes the AppsFlyer Modu
 *Usage*:
 
 ```
-AppsflyerSteamModule afm = new AppsflyerSteamModule("DEV_KEY", "STEAM_APP_ID");
+AppsflyerSteamModule afm = new AppsflyerSteamModule("STEAM_APP_ID", "DEV_KEY");
 ```
 
 *Arguments*:
 
-* DEV_KEY - retrieve the Dev key from the marketer or the [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
 * STEAM_APP_ID - you may find your app id on the [SteamDB](https://steamdb.info/apps/).
+* DEV_KEY - retrieve the Dev key from the marketer or the [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
 
 
 ### `public void Start()`
