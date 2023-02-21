@@ -64,8 +64,9 @@ afm.LogEvent(event_name, event_values);
 ## Running the Sample App 
 
 1. Open Unity hub and open the project.
-2. Add [Steamworks SDK](https://steamworks.github.io/) via your package manager.
-3. make use the sample code in SteamScript.cs with your DEV_KEY and APP_ID.
-4. Launch the sample app from the Unity editor.
+2. Add Steamworks to you unity project - follow the steps here [Steamworks SDK](https://steamworks.github.io/) and add it through your package manager.
+3. Use the sample code in SteamScript.cs with your DEV_KEY and APP_ID.
+4. Launch the sample app via the Unity editor and check that your debug log shows the following message:
+![Request-OK](202OK.PNG)
 5. After 24 hours, the dashboard will update and show organic/non-organic install and in-app events.
 
