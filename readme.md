@@ -1,15 +1,12 @@
-# AppsFlyer Unreal Steam Integration
+# AppsFlyer Unity Steam Integration
 
-> 👍 Success
-> 
-> Vitae reprehenderit at aliquid error voluptates eum dignissimos.
 
-## **Getting started with AppsFlyer Unreal Steam Integration**
+## **Getting started with AppsFlyer Unity Steam Integration**
 
 AppsFlyer empowers marketers to make better decisions by providing game marketers with powerful tools to perform cross-platform attribution.
 Game attribution requires the game to integrate an AppsFlyer SDK, which handles first open, consecutive sessions, and in-app events. For example, purchase events. 
 
-We recommend you use this sample app as a reference for integrating AppsFlyer SDK into your Unreal-Steam game.
+We recommend you use this sample app as a reference for integrating AppsFlyer SDK into your Unity-Steam game.
 
 <hr/>
 
@@ -32,7 +29,7 @@ This method receives your api key and app id, and initializes the AppsFlyer Modu
 *Usage*:
 
 ```
-AppsflyerSteamModule()->start("DEV_KEY", "STEAM_APP_ID");
+AppsflyerSteamModule afm = new AppsflyerSteamModule("DEV_KEY", "STEAM_APP_ID");
 ```
 
 *Arguments*:
@@ -41,8 +38,14 @@ AppsflyerSteamModule()->start("DEV_KEY", "STEAM_APP_ID");
 * STEAM_APP_ID - you may find your app id on the [SteamDB](https://steamdb.info/apps/).
 
 
-### `void Start()`
+### `public void Start()`
 sends "first open/session" request to AppsFlyer.
+
+*Usage*:
+
+```
+afm.Start();
+```
 
 ### `public void LogEvent(string event_name, string event_values)`
 
@@ -52,19 +55,17 @@ This method receives an event name and json object and sends an in-app event to 
 
 ```
 //set event name
-std::string event_name = "af_purchase";
+string event_name = "af_purchase";
 //set json string
-std::string event_values = "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\":24.12}";
-AppsflyerSteamModule()->logEvent(event_name, event_values);
+string event_values = "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\":24.12}";
+afm.LogEvent(event_name, event_values);
 ```
 
 ## Running the Sample App 
 
-1. Open Unity engine.
-2. Choose New Project -> Games -> First Person
-3. Choose C++ instead of Blueprints
-4. Name the project AppsFlyerSample and press "create project".
-5. Follow [the steps below](#implementing-appsflyer-into-your-own-steam-game)
-6. Launch the sample app from the UE4 engine editor
-7. After 24 hours, the dashboard will update and show organic/non-organic install and in-app events.
+1. Open Unity hub and open the project.
+2. Add [Steamworks SDK](https://steamworks.github.io/) via your package manager.
+3. make use the sample code in SteamScript.cs with your DEV_KEY and APP_ID.
+4. Launch the sample app from the Unity editor.
+5. After 24 hours, the dashboard will update and show organic/non-organic install and in-app events.
 
