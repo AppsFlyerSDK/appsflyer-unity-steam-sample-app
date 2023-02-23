@@ -15,7 +15,7 @@ public class AppsflyerSteamModule
     public int af_counter { get; set; }
     public string af_device_id { get; }
 
-    public AppsflyerSteamModule(string appid, string devkey)
+    public AppsflyerSteamModule(string devkey, string appid)
     {
         this.devkey = devkey;
         this.appid = appid;
@@ -52,15 +52,19 @@ public class AppsflyerSteamModule
         DeviceIDs deviceid = new DeviceIDs { type = "custom", value = af_device_id };
         DeviceIDs[] deviceids = { deviceid };
 
+        string deviceModel = SystemInfo.operatingSystem
+                .Replace(" ", "-")
+                .Replace("(", "")
+                .Replace(")", "");
+        if (deviceModel.Length > 24) {
+            deviceModel = deviceModel.Substring(0, 24);
+        }
+
         RequestData req = new RequestData
         {
             timestamp = DateTime.Now.ToString("yyyyMMddHHmmssffff"),
             device_os_version = "1.0.0",
-            device_model = SystemInfo.operatingSystem
-                .Replace(" ", "-")
-                .Replace("(", "")
-                .Replace(")", "")
-                .Substring(0, 24),
+            device_model = deviceModel,
             app_version = SteamApps.GetAppBuildId().ToString(),
             device_ids = deviceids,
             request_id = GenerateGuid(),
@@ -91,8 +95,7 @@ public class AppsflyerSteamModule
             device_model = SystemInfo.operatingSystem
                 .Replace(" ", "-")
                 .Replace("(", "")
-                .Replace(")", "")
-                .Substring(0, 24),
+                .Replace(")", ""),
             app_version = SteamApps.GetAppBuildId().ToString(),
             device_ids = deviceids,
             request_id = GenerateGuid(),
