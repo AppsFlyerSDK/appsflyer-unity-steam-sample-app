@@ -37,39 +37,42 @@ public class AppsflyerSteamModule
         // set listenered for steam callbacks
         if (SteamManager.Initialized)
         {
-            m_SteamAPICallCompleted_firstOpen = CallResult<HTTPRequestCompleted_t>.Create(OnHTTPCallBack);
-            m_SteamAPICallCompleted_session = CallResult<HTTPRequestCompleted_t>.Create(OnHTTPCallBack);
-            m_SteamAPICallCompleted_inapp = CallResult<HTTPRequestCompleted_t>.Create(OnHTTPCallBack);
+            m_SteamAPICallCompleted_firstOpen = CallResult<HTTPRequestCompleted_t>.Create(
+                OnHTTPCallBack
+            );
+            m_SteamAPICallCompleted_session = CallResult<HTTPRequestCompleted_t>.Create(
+                OnHTTPCallBack
+            );
+            m_SteamAPICallCompleted_inapp = CallResult<HTTPRequestCompleted_t>.Create(
+                OnHTTPCallBack
+            );
         }
     }
 
-    // report first open event to AppsFlyer (or session if counter > 2)
-    public void Start()
+    private RequestData CreateRequestData()
     {
-        // Debug.Log(SystemInfo.deviceType + " | " + SystemInfo.deviceModel + " | " + SystemInfo.operatingSystem);
-
         // setting the device ids and request body
         DeviceIDs deviceid = new DeviceIDs { type = "custom", value = af_device_id };
         DeviceIDs[] deviceids = { deviceid };
-
-        string deviceModel = SystemInfo.operatingSystem
-                .Replace(" ", "-")
-                .Replace("(", "")
-                .Replace(")", "");
-        if (deviceModel.Length > 24) {
-            deviceModel = deviceModel.Substring(0, 24);
-        }
 
         RequestData req = new RequestData
         {
             timestamp = DateTime.Now.ToString("yyyyMMddHHmmssffff"),
             device_os_version = "1.0.0",
-            device_model = deviceModel,
+            device_model = SystemInfo.operatingSystem,
             app_version = SteamApps.GetAppBuildId().ToString(),
             device_ids = deviceids,
             request_id = GenerateGuid(),
             limit_ad_tracking = false
         };
+        return req;
+    }
+
+    // report first open event to AppsFlyer (or session if counter > 2)
+    public void Start()
+    {
+        // generating the request data
+        RequestData req = CreateRequestData();
 
         // set request type
         AppsflyerRequestType REQ_TYPE =
@@ -84,25 +87,11 @@ public class AppsflyerSteamModule
     // report inapp event to AppsFlyer
     public void LogEvent(string event_name, string event_values)
     {
-        // setting the device ids and request body
-        DeviceIDs deviceid = new DeviceIDs { type = "custom", value = af_device_id };
-        DeviceIDs[] deviceids = { deviceid };
-
-        RequestData req = new RequestData
-        {
-            timestamp = DateTime.Now.ToString("yyyyMMddHHmmssffff"),
-            device_os_version = "1.0.0",
-            device_model = SystemInfo.operatingSystem
-                .Replace(" ", "-")
-                .Replace("(", "")
-                .Replace(")", ""),
-            app_version = SteamApps.GetAppBuildId().ToString(),
-            device_ids = deviceids,
-            request_id = GenerateGuid(),
-            limit_ad_tracking = false,
-            event_name = event_name,
-            event_values = event_values
-        };
+        // generating the request data
+        RequestData req = CreateRequestData();
+        // setting the event name and value
+        req.event_name = event_name;
+        req.event_values = event_values;
 
         // set request type
         AppsflyerRequestType REQ_TYPE = AppsflyerRequestType.INAPP_EVENT_REQUEST;
@@ -124,7 +113,7 @@ public class AppsflyerSteamModule
 
         // create auth token
         string auth = HmacSha256Digest(json, devkey);
-        
+
         // define the url based on the request type
         string url;
         switch (REQ_TYPE)
