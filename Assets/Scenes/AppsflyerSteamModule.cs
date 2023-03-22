@@ -177,7 +177,7 @@ public class AppsflyerSteamModule
             Debug.LogError("ERROR sending req of type: " + pCallback.m_ulContextValue);
             Debug.LogError("status code: " + pCallback.m_eStatusCode);
         } //handle success
-        else
+        else if (pCallback.m_eStatusCode == EHTTPStatusCode.k_EHTTPStatusCode202Accepted)
         {
             Debug.Log("Success sending req of type: " + pCallback.m_ulContextValue);
             Debug.Log("status code: " + pCallback.m_eStatusCode);
@@ -192,6 +192,12 @@ public class AppsflyerSteamModule
                 case AppsflyerRequestType.INAPP_EVENT_REQUEST:
                     break;
             }
+        }
+        else
+        {
+            Debug.Log(
+                "Please try to send the request to 'sandbox-events.appsflyer.com' instead of 'events.appsflyer.com' in order to debug."
+            );
         }
     }
 
