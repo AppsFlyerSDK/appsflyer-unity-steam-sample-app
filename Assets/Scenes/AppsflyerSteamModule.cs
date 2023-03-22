@@ -177,7 +177,10 @@ public class AppsflyerSteamModule
             Debug.LogError("ERROR sending req of type: " + pCallback.m_ulContextValue);
             Debug.LogError("status code: " + pCallback.m_eStatusCode);
         } //handle success
-        else if (pCallback.m_eStatusCode == EHTTPStatusCode.k_EHTTPStatusCode202Accepted)
+        else if (
+            pCallback.m_eStatusCode == EHTTPStatusCode.k_EHTTPStatusCode202Accepted
+            || pCallback.m_eStatusCode == EHTTPStatusCode.k_EHTTPStatusCode200OK
+        )
         {
             Debug.Log("Success sending req of type: " + pCallback.m_ulContextValue);
             Debug.Log("status code: " + pCallback.m_eStatusCode);
