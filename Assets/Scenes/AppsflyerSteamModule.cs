@@ -3,6 +3,7 @@ using System.Text;
 using UnityEngine;
 using Steamworks;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 public class AppsflyerSteamModule
 {
@@ -55,12 +56,29 @@ public class AppsflyerSteamModule
         DeviceIDs deviceid = new DeviceIDs { type = "custom", value = af_device_id };
         DeviceIDs[] deviceids = { deviceid };
 
+        string device_os_ver = SystemInfo.operatingSystem;
+        if (device_os_ver.IndexOf(" (") > -1)
+            device_os_ver = device_os_ver.Replace(" (", "");
+        if (device_os_ver.IndexOf("(") > -1)
+            device_os_ver = device_os_ver.Replace("(", "");
+        if (device_os_ver.IndexOf(")") > -1)
+            device_os_ver = device_os_ver.Replace(")", "");
+        if (device_os_ver.IndexOf("%20") > -1)
+            device_os_ver = device_os_ver.Replace("%20", "-");
+        if (device_os_ver.IndexOf(" ") > -1)
+            device_os_ver = device_os_ver.Replace(" ", "-");
+        device_os_ver = Regex.Replace(device_os_ver, "[^0-9.+-]", "");
+        if (device_os_ver.IndexOf("-") == 0)
+            device_os_ver = device_os_ver.Substring(1, device_os_ver.Length - 1);
+        if (device_os_ver.Length > 23)
+            device_os_ver = device_os_ver.Substring(0, 23);
+
         RequestData req = new RequestData
         {
             timestamp = DateTime.Now.ToString("yyyyMMddHHmmssffff"),
-            device_os_version = "1.0.0",
-            device_model = SystemInfo.operatingSystem,
-            app_version = SteamApps.GetAppBuildId().ToString(),
+            device_os_version = device_os_ver,
+            device_model = SystemInfo.deviceModel,
+            app_version = "1.0.0", //TODO: Insert your app version
             device_ids = deviceids,
             request_id = GenerateGuid(),
             limit_ad_tracking = false
