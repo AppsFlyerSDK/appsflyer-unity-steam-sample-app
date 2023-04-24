@@ -19,7 +19,7 @@ We recommend you use this sample app as a reference for integrating AppsFlyer SD
 
 ### Prerequisite
 
-1. Unity Engine
+1. Unity aEngine
 2. [Steamworks SDK](https://steamworks.github.io/) integrated within your Unity project
 3. Steam client installed with an active user (_MUST BE RUNNING FOR TESTING_)
 
