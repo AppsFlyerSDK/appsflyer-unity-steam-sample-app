@@ -74,9 +74,9 @@ afm.LogEvent(event_name, event_values);
 2. Add Steamworks to you unity project - follow the steps here [Steamworks SDK](https://steamworks.github.io/) and add it through your package manager.
 3. Use the sample code in SteamScript.cs and update it with your DEV_KEY and APP_ID.
 4. Add the SteamManager and SteamScript to an empty game object (or use the one in the scenes folder):
-   ![Request-OK](SteamGameObject.PNG)
+   ![Request-OK](https://files.readme.io/7a002a6-small-SteamGameObject.PNG)
 5. Launch the sample app via the Unity editor and check that your debug log shows the following message:
-   ![Request-OK](202OK.PNG)
+   ![Request-OK](https://files.readme.io/1f7dcf0-small-202OK.PNG)
 6. After 24 hours, the dashboard will update and show organic/non-organic install and in-app events.
 
 ## Deleting Steam Cloud Saves (resetting the attribition)
