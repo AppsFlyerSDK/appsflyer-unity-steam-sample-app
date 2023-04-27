@@ -6,6 +6,11 @@ hidden: true
 slug: unity-steam
 ---
 
+
+> Link to repository
+> [GitHub](https://github.com/AppsFlyerSDK/appsflyer-unity-steam-sample-app)
+
+
 # AppsFlyer Unity Steam Integration
 
 ## **Getting started with AppsFlyer Unity Steam Integration**
