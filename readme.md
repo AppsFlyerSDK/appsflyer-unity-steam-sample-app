@@ -45,14 +45,19 @@ AppsflyerSteamModule afm = new AppsflyerSteamModule("STEAM_APP_ID", "DEV_KEY");
 - `STEAM_APP_ID`: Found in the [SteamDB](https://steamdb.info/apps/).
 - `DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
 
-### `public void Start()`
+### `public void Start(bool skipFirst = false)`
 
 This method sends first open and session requests to AppsFlyer.
 
 **Usage**:
 
 ```
+// without the flag
 afm.Start();
+
+// with the flag
+bool skipFirst = [SOME_CONDITION];
+afm.Start(skipFirst);
 ```
 
 ### `public void LogEvent(string event_name, string event_values)`
@@ -69,6 +74,20 @@ string event_values = "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\"
 afm.LogEvent(event_name, event_values);
 ```
 
+### `bool isInstallOlderThanDate(string datestring)`
+
+This method receives a date string and returns true if the game folder creation date is older than the date string. The date string format is: "2023-January-01T23:12:34+00:00"
+
+```
+// the creation date in this example is "2023-January-23T08:30:00+00:00"
+
+// will return false
+bool dateBefore = AppsflyerSteamModule()->isInstallOlderThanDate("2023-January-01T23:12:34+00:00");
+
+// will return true
+bool dateAfter = AppsflyerSteamModule()->isInstallOlderThanDate("2023-April-10T23:12:34+00:00");
+```
+
 ## Running the sample app
 
 1. Open Unity hub and open the project.
@@ -79,6 +98,23 @@ afm.LogEvent(event_name, event_values);
 5. Launch the sample app via the Unity editor and check that your debug log shows the following message:  
    ![Request-OK](https://files.readme.io/1f7dcf0-small-202OK.PNG)
 6. After 24 hours, the dashboard updates and shows organic and non-organic installs and in-app events.
+
+## Implementing AppsFlyer in your Steam game
+
+### Setup
+
+1. Add Steamworks to your Unity project. Follow the [Steamworks SDK instructions](https://steamworks.github.io/) and add it through your package manager.
+2. Add `SteamManager.cs` to a game object.
+3. Add the script from `Assets/Scenes/AppsflyerSteamModule.cs` to your app.
+4. Use the sample code in `Assets/Scenes/SteamScript.cs` and update it with your `DEV_KEY` and `APP_ID`.
+5. Initialize the SDK.
+
+```
+AppsflyerSteamModule afm = new AppsflyerSteamModule("DEV_KEY", "STEAM_APP_ID");
+```
+
+6. [Start](#public-void-startbool-skipfirst--false) the AppsFlyer integration.
+7. Report [in-app events](#public-void-logeventstring-event_name-string-event_values).
 
 ## Deleting Steam cloud saves (resetting the attribution)
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using Steamworks;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using System.IO;
 
 public class AppsflyerSteamModule
 {
@@ -87,14 +88,14 @@ public class AppsflyerSteamModule
     }
 
     // report first open event to AppsFlyer (or session if counter > 2)
-    public void Start()
+    public void Start(bool skipFirst = false)
     {
         // generating the request data
         RequestData req = CreateRequestData();
 
         // set request type
         AppsflyerRequestType REQ_TYPE =
-            af_counter < 2
+            af_counter < 2 && !skipFirst
                 ? AppsflyerRequestType.FIRST_OPEN_REQUEST
                 : AppsflyerRequestType.SESSION_REQUEST;
 
@@ -116,6 +117,31 @@ public class AppsflyerSteamModule
 
         // post the request via steam http client
         SendSteamPostReq(req, REQ_TYPE);
+    }
+
+    public bool IsInstallOlderThanDate(string date)
+    {
+        bool isInstallOlder = false;
+
+        AppId_t steamAppID = new AppId_t(uint.Parse(appid));
+        string pchFolder;
+        uint cchFolderBufferSize = 256;
+        SteamApps.GetAppInstallDir(steamAppID, out pchFolder, cchFolderBufferSize);
+
+        if (pchFolder == null)
+        {
+            Debug.LogWarning("could not find install folder");
+            return isInstallOlder;
+        }
+        DateTime createdTime = Directory.GetCreationTime(pchFolder);
+        DateTime checkDate = DateTime.Parse(date);
+
+        if (createdTime != null)
+        {
+            isInstallOlder = DateTime.Compare(createdTime, checkDate) < 0;
+        }
+
+        return isInstallOlder;
     }
 
     // send post request with Steam HTTP Client
