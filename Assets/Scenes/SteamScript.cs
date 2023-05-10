@@ -10,7 +10,7 @@ public class SteamScript : MonoBehaviour
     {
         if (SteamManager.Initialized)
         {
-            AppsflyerSteamModule afm = new AppsflyerSteamModule("DEV_KEY", "APP_ID");
+            AppsflyerSteamModule afm = new AppsflyerSteamModule("DEV_KEY", "STEAM_APP_ID", this);
             afm.Start();
             // //set event name
             string event_name = "af_purchase";
@@ -18,6 +18,10 @@ public class SteamScript : MonoBehaviour
             string event_values =
                 "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\":24.12}";
             afm.LogEvent(event_name, event_values);
+        }
+        else
+        {
+            Debug.LogError("Steam Client is not running");
         }
     }
 

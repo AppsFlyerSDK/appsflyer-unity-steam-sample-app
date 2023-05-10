@@ -5,22 +5,23 @@ using Steamworks;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using System.IO;
+using UnityEngine.Networking;
+using System.Collections;
 
 public class AppsflyerSteamModule
 {
-    private CallResult<HTTPRequestCompleted_t> m_SteamAPICallCompleted_firstOpen;
-    private CallResult<HTTPRequestCompleted_t> m_SteamAPICallCompleted_session;
-    private CallResult<HTTPRequestCompleted_t> m_SteamAPICallCompleted_inapp;
-
     public string devkey { get; }
     public string appid { get; }
     public int af_counter { get; set; }
     public string af_device_id { get; }
 
-    public AppsflyerSteamModule(string devkey, string appid)
+    public MonoBehaviour mono { get; }
+
+    public AppsflyerSteamModule(string devkey, string appid, MonoBehaviour mono)
     {
         this.devkey = devkey;
         this.appid = appid;
+        this.mono = mono;
 
         this.af_counter = PlayerPrefs.GetInt("af_counter");
         // Debug.Log("af_counter: " + af_counter);
@@ -33,22 +34,6 @@ public class AppsflyerSteamModule
             af_device_id = GenerateGuid();
             PlayerPrefs.SetString("af_device_id", af_device_id);
         }
-
-        // Debug.Log("af_device_id: " + af_device_id);
-
-        // set listenered for steam callbacks
-        if (SteamManager.Initialized)
-        {
-            m_SteamAPICallCompleted_firstOpen = CallResult<HTTPRequestCompleted_t>.Create(
-                OnHTTPCallBack
-            );
-            m_SteamAPICallCompleted_session = CallResult<HTTPRequestCompleted_t>.Create(
-                OnHTTPCallBack
-            );
-            m_SteamAPICallCompleted_inapp = CallResult<HTTPRequestCompleted_t>.Create(
-                OnHTTPCallBack
-            );
-        }
     }
 
     private RequestData CreateRequestData()
@@ -56,6 +41,9 @@ public class AppsflyerSteamModule
         // setting the device ids and request body
         DeviceIDs deviceid = new DeviceIDs { type = "custom", value = af_device_id };
         DeviceIDs[] deviceids = { deviceid };
+        string steamIDInt = SteamUser.GetSteamID().ToString();
+        // DeviceIDs steamid = new DeviceIDs { type = "steamid" };
+        // DeviceIDs[] deviceids = { deviceid, steamid };
 
         string device_os_ver = SystemInfo.operatingSystem;
         if (device_os_ver.IndexOf(" (") > -1)
@@ -100,7 +88,7 @@ public class AppsflyerSteamModule
                 : AppsflyerRequestType.SESSION_REQUEST;
 
         // post the request via steam http client
-        SendSteamPostReq(req, REQ_TYPE);
+        mono.StartCoroutine(SendSteamPostReq(req, REQ_TYPE));
     }
 
     // report inapp event to AppsFlyer
@@ -116,7 +104,7 @@ public class AppsflyerSteamModule
         AppsflyerRequestType REQ_TYPE = AppsflyerRequestType.INAPP_EVENT_REQUEST;
 
         // post the request via steam http client
-        SendSteamPostReq(req, REQ_TYPE);
+        mono.StartCoroutine(SendSteamPostReq(req, REQ_TYPE));
     }
 
     public bool IsInstallOlderThanDate(string date)
@@ -145,7 +133,7 @@ public class AppsflyerSteamModule
     }
 
     // send post request with Steam HTTP Client
-    private void SendSteamPostReq(RequestData req, AppsflyerRequestType REQ_TYPE)
+    private IEnumerator SendSteamPostReq(RequestData req, AppsflyerRequestType REQ_TYPE)
     {
         // serialize the json and remove empty fields
         string json = JsonConvert.SerializeObject(
@@ -176,59 +164,54 @@ public class AppsflyerSteamModule
                 break;
         }
 
-        // create the steam api call handles
-        SteamAPICall_t api_handle;
-        HTTPRequestHandle handle = SteamHTTP.CreateHTTPRequest(EHTTPMethod.k_EHTTPMethodPOST, url);
-        // set context (request type)
-        SteamHTTP.SetHTTPRequestContextValue(handle, Convert.ToUInt64(REQ_TYPE));
-        // set the authorization
-        SteamHTTP.SetHTTPRequestHeaderValue(handle, "Authorization", auth);
         // set the request body
-        byte[] bytes = Encoding.ASCII.GetBytes(json);
-        uint size = (uint)bytes.Length;
-        SteamHTTP.SetHTTPRequestRawPostBody(handle, "application/json", bytes, size);
-        // sending the request
-        SteamHTTP.SendHTTPRequest(handle, out api_handle);
+        var uwr = new UnityWebRequest(url, "POST");
+        byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
+        uwr.uploadHandler = (UploadHandler)new UploadHandlerRaw(jsonToSend);
+        uwr.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
 
-        // attach the request to the handler based on the request type
+        // set the request content type
+        uwr.SetRequestHeader("Content-Type", "application/json");
+        // set the authorization
+        uwr.SetRequestHeader("Authorization", auth);
+        uwr.SetRequestHeader(
+            "user-agent",
+            "Valve/Steam HTTP Client 1.0 ("
+                + appid
+                + ")/"
+                + "("
+                + SystemInfo.operatingSystem.Replace("(", "").Replace(")", "")
+                + ")"
+        );
+
+        //Send the request then wait here until it returns
+        yield return uwr.SendWebRequest();
+
         switch (REQ_TYPE)
         {
             case AppsflyerRequestType.FIRST_OPEN_REQUEST:
-                m_SteamAPICallCompleted_firstOpen.Set(api_handle);
+                Debug.Log("Request type: FIRST_OPEN_REQUEST");
                 break;
             case AppsflyerRequestType.SESSION_REQUEST:
-                m_SteamAPICallCompleted_session.Set(api_handle);
+                Debug.Log("Request type: SESSION_REQUEST");
+                PlayerPrefs.SetInt("af_counter", af_counter);
                 break;
             case AppsflyerRequestType.INAPP_EVENT_REQUEST:
-                m_SteamAPICallCompleted_inapp.Set(api_handle);
+                Debug.Log("Request type: INAPP_EVENT_REQUEST");
                 break;
         }
-    }
+        Debug.Log("Is success: " + uwr.result);
+        Debug.Log("Response Code: " + uwr.responseCode);
+        string resCode = uwr.responseCode.ToString();
 
-    // generate GUID for post request and AF id
-    private string GenerateGuid()
-    {
-        Guid myuuid = Guid.NewGuid();
-        return myuuid.ToString();
-    }
-
-    // handle HTTP callback from steam
-    private void OnHTTPCallBack(HTTPRequestCompleted_t pCallback, bool bIOFailure)
-    {
-        // handle error
-        if (!pCallback.m_bRequestSuccessful || bIOFailure)
+        if (uwr.result == UnityWebRequest.Result.ConnectionError)
         {
-            Debug.LogError("ERROR sending req of type: " + pCallback.m_ulContextValue);
-            Debug.LogError("status code: " + pCallback.m_eStatusCode);
-        } //handle success
-        else if (
-            pCallback.m_eStatusCode == EHTTPStatusCode.k_EHTTPStatusCode202Accepted
-            || pCallback.m_eStatusCode == EHTTPStatusCode.k_EHTTPStatusCode200OK
-        )
+            Debug.Log("Error While Sending: " + uwr.error);
+            // TODO: handle/log error
+        }
+        else if (resCode == "202" || resCode == "200")
         {
-            Debug.Log("Success sending req of type: " + pCallback.m_ulContextValue);
-            Debug.Log("status code: " + pCallback.m_eStatusCode);
-            switch ((AppsflyerRequestType)pCallback.m_ulContextValue)
+            switch (REQ_TYPE)
             {
                 // increase the appsflyer counter on a first-open/session request
                 case AppsflyerRequestType.FIRST_OPEN_REQUEST:
@@ -246,6 +229,13 @@ public class AppsflyerSteamModule
                 "Please try to send the request to 'sandbox-events.appsflyer.com' instead of 'events.appsflyer.com' in order to debug."
             );
         }
+    }
+
+    // generate GUID for post request and AF id
+    private string GenerateGuid()
+    {
+        Guid myuuid = Guid.NewGuid();
+        return myuuid.ToString();
     }
 
     // generate hmac auth for post requests
