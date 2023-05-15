@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Collections.Generic;
 
 public class AppsflyerSteamModule
 {
@@ -92,7 +93,7 @@ public class AppsflyerSteamModule
     }
 
     // report inapp event to AppsFlyer
-    public void LogEvent(string event_name, string event_parameters)
+    public void LogEvent(string event_name, Dictionary<string, object> event_parameters)
     {
         // generating the request data
         RequestData req = CreateRequestData();
@@ -272,7 +273,7 @@ class RequestData
     public string request_id;
     public bool limit_ad_tracking;
     public string event_name;
-    public string event_parameters;
+    public Dictionary<string, object> event_parameters;
 }
 
 [Serializable]

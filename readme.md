@@ -60,18 +60,22 @@ bool skipFirst = [SOME_CONDITION];
 afm.Start(skipFirst);
 ```
 
-### `public void LogEvent(string event_name, string event_values)`
+### `public void LogEvent(string event_name, Dictionary<string, object> event_parameters)`
 
 This method receives an event name and JSON object and sends in-app events to AppsFlyer.
 
 **Usage**:
 
 ```
-//set event name
+// set event name
 string event_name = "af_purchase";
-//set json string
-string event_values = "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\":24.12}";
-afm.LogEvent(event_name, event_values);
+// set event values
+Dictionary<string, object> event_parameters = new Dictionary<string, object>();
+event_parameters.Add("af_currency", "USD");
+event_parameters.Add("af_price", 6.66);
+event_parameters.Add("af_revenue", 12.12);
+// send logEvent request
+afm.LogEvent(event_name, event_parameters);
 ```
 
 ### `bool isInstallOlderThanDate(string datestring)`
@@ -114,7 +118,7 @@ AppsflyerSteamModule afm = new AppsflyerSteamModule("DEV_KEY", "STEAM_APP_ID");
 ```
 
 6. [Start](#public-void-startbool-skipfirst--false) the AppsFlyer integration.
-7. Report [in-app events](#public-void-logeventstring-event_name-string-event_values).
+7. Report [in-app events](#public-void-logeventstring-event_name-dictionarystring-object-event_parameters).
 
 ## Deleting Steam cloud saves (resetting the attribution)
 
