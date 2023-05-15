@@ -15,9 +15,9 @@ public class SteamScript : MonoBehaviour
             // //set event name
             string event_name = "af_purchase";
             //set json string
-            string event_values =
+            string event_parameters =
                 "{\"af_currency\":\"USD\",\"af_price\":6.66,\"af_revenue\":24.12}";
-            afm.LogEvent(event_name, event_values);
+            afm.LogEvent(event_name, event_parameters);
         }
         else
         {
