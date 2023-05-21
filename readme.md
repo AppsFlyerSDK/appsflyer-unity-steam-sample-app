@@ -30,14 +30,14 @@ We recommend you use this sample app as a reference for integrating the AppsFlye
 
 `AppsflyerSteamModule.cs`, included in the scenes folder, contains the required code and logic to connect to AppsFlyer servers and report events.
 
-### `AppsflyerSteamModule(string appid, string devkey)`
+### `AppsflyerSteamModule(string devkey, string appid, MonoBehaviour mono)`
 
-This method receives your API key and app ID and initializes the AppsFlyer Module.
+This method receives your API key, Steam app ID and the parent MonoBehaviour and initializes the AppsFlyer Module.
 
 **Usage**:
 
 ```
-AppsflyerSteamModule afm = new AppsflyerSteamModule("STEAM_APP_ID", "DEV_KEY");
+AppsflyerSteamModule afm = new AppsflyerSteamModule("STEAM_APP_ID", "DEV_KEY", this);
 ```
 
 **Arguments**:
@@ -45,7 +45,7 @@ AppsflyerSteamModule afm = new AppsflyerSteamModule("STEAM_APP_ID", "DEV_KEY");
 - `STEAM_APP_ID`: Found in the [SteamDB](https://steamdb.info/apps/).
 - `DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
 
-### `public void Start(bool skipFirst = false)`
+### `void Start(bool skipFirst = false)`
 
 This method sends first open and session requests to AppsFlyer.
 
@@ -60,7 +60,7 @@ bool skipFirst = [SOME_CONDITION];
 afm.Start(skipFirst);
 ```
 
-### `public void LogEvent(string event_name, Dictionary<string, object> event_parameters)`
+### `void LogEvent(string event_name, Dictionary<string, object> event_parameters)`
 
 This method receives an event name and JSON object and sends in-app events to AppsFlyer.
 
@@ -79,7 +79,7 @@ afm.LogEvent(event_name, event_parameters);
 
 ```
 
-### `public string getAppsFlyerUID()`
+### `string getAppsFlyerUID()`
 
 Get AppsFlyer's unique device ID. The SDK generates an AppsFlyer unique device ID upon app installation. When the SDK is started, this ID is recorded as the ID of the first app install.
 
