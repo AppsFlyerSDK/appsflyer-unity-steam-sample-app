@@ -79,7 +79,7 @@ afm.LogEvent(event_name, event_parameters);
 
 ```
 
-### `string getAppsFlyerUID()`
+### `string GetAppsFlyerUID()`
 
 Get AppsFlyer's unique device ID. The SDK generates an AppsFlyer unique device ID upon app installation. When the SDK is started, this ID is recorded as the ID of the first app install.
 
@@ -88,10 +88,10 @@ Get AppsFlyer's unique device ID. The SDK generates an AppsFlyer unique device I
 ```
 AppsflyerSteamModule afm = new AppsflyerSteamModule("DEV_KEY", "STEAM_APP_ID", this);
 afm.Start();
-string af_uid = afm.getAppsFlyerUID();
+string af_uid = afm.GetAppsFlyerUID();
 ```
 
-### `bool isInstallOlderThanDate(string datestring)`
+### `bool IsInstallOlderThanDate(string datestring)`
 
 This method receives a date string and returns true if the game folder creation date is older than the date string. The date string format is: "2023-January-01T23:12:34+00:00"
 
@@ -99,10 +99,10 @@ This method receives a date string and returns true if the game folder creation 
 // the creation date in this example is "2023-January-23T08:30:00+00:00"
 
 // will return false
-bool dateBefore = AppsflyerSteamModule()->isInstallOlderThanDate("2023-January-01T23:12:34+00:00");
+bool dateBefore = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-January-01T23:12:34+00:00");
 
 // will return true
-bool dateAfter = AppsflyerSteamModule()->isInstallOlderThanDate("2023-April-10T23:12:34+00:00");
+bool dateAfter = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-April-10T23:12:34+00:00");
 ```
 
 ## Running the sample app

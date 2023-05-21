@@ -37,7 +37,7 @@ public class AppsflyerSteamModule
         }
     }
 
-    public string getAppsFlyerUID()
+    public string GetAppsFlyerUID()
     {
         return this.af_device_id;
     }
