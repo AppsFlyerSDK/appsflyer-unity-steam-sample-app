@@ -76,6 +76,19 @@ event_parameters.Add("af_price", 6.66);
 event_parameters.Add("af_revenue", 12.12);
 // send logEvent request
 afm.LogEvent(event_name, event_parameters);
+
+```
+
+### `public string getAppsFlyerUID()`
+
+Get AppsFlyer's unique device ID. The SDK generates an AppsFlyer unique device ID upon app installation. When the SDK is started, this ID is recorded as the ID of the first app install.
+
+**Usage**:
+
+```
+AppsflyerSteamModule afm = new AppsflyerSteamModule("DEV_KEY", "STEAM_APP_ID", this);
+afm.Start();
+string af_uid = afm.getAppsFlyerUID();
 ```
 
 ### `bool isInstallOlderThanDate(string datestring)`

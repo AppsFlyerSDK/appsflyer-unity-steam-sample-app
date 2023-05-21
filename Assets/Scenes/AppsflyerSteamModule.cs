@@ -11,10 +11,10 @@ using System.Collections.Generic;
 
 public class AppsflyerSteamModule
 {
-    public string devkey { get; }
-    public string appid { get; }
-    public int af_counter { get; set; }
-    public string af_device_id { get; }
+    private string devkey { get; }
+    private string appid { get; }
+    private int af_counter { get; set; }
+    private string af_device_id { get; }
 
     public MonoBehaviour mono { get; }
 
@@ -35,6 +35,11 @@ public class AppsflyerSteamModule
             af_device_id = GenerateGuid();
             PlayerPrefs.SetString("af_device_id", af_device_id);
         }
+    }
+
+    public string getAppsFlyerUID()
+    {
+        return this.af_device_id;
     }
 
     private RequestData CreateRequestData()
