@@ -36,13 +36,13 @@ This method receives your API key, Steam app ID and the parent MonoBehaviour and
 
 **Method signature**
 
-```
+```c#
 AppsflyerSteamModule(string devkey, string appid, MonoBehaviour mono)
 ```
 
-**Usage**
+**Usage**:
 
-```
+```c#
 AppsflyerSteamModule afm = new AppsflyerSteamModule("STEAM_APP_ID", "DEV_KEY", this);
 ```
 
@@ -57,13 +57,13 @@ This method sends first open and session requests to AppsFlyer.
 
 **Method signature**
 
-```
+```c#
 void Start(bool skipFirst = false)
 ```
 
-**Usage**
+**Usage**:
 
-```
+```c#
 // without the flag
 afm.Start();
 
@@ -78,13 +78,13 @@ This method receives an event name and JSON object and sends in-app events to Ap
 
 **Method signature**
 
-```
+```c#
 void LogEvent(string event_name, Dictionary<string, object> event_parameters)
 ```
 
-**Usage**
+**Usage**:
 
-```
+```c#
 // set event name
 string event_name = "af_purchase";
 // set event values
@@ -103,13 +103,13 @@ Get AppsFlyer's unique device ID. The SDK generates an AppsFlyer unique device I
 
 **Method signature**
 
-```
+```c#
 string GetAppsFlyerUID()
 ```
 
-**Usage**
+**Usage**:
 
-```
+```c#
 AppsflyerSteamModule afm = new AppsflyerSteamModule("DEV_KEY", "STEAM_APP_ID", this);
 afm.Start();
 string af_uid = afm.GetAppsFlyerUID();
@@ -119,13 +119,13 @@ string af_uid = afm.GetAppsFlyerUID();
 
 **Method signature**
 
-```
+```c#
 bool IsInstallOlderThanDate(string datestring)
 ```
 
 This method receives a date string and returns true if the game folder creation date is older than the date string. The date string format is: "2023-January-01T23:12:34+00:00"
 
-```
+```c#
 // the creation date in this example is "2023-January-23T08:30:00+00:00"
 
 // will return false
@@ -140,7 +140,7 @@ bool dateAfter = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-April-10T2
 1. Open Unity hub and open the project.
 2. Add Steamworks to your Unity project. Follow the [Steamworks SDK instructions](https://steamworks.github.io/) and add it through your package manager.
 3. Use the sample code in `SteamScript.cs` and update it with your `DEV_KEY` and `APP_ID`.
-4. Add the `SteamManager` and` SteamScript` to an empty game object (or use the one in the scenes folder).  
+4. Add the `SteamManager` and `SteamScript` to an empty game object (or use the one in the scenes folder).  
    ![Request-OK](https://files.readme.io/7a002a6-small-SteamGameObject.PNG)
 5. Launch the sample app via the Unity editor and check that your debug log shows the following message:  
    ![Request-OK](https://files.readme.io/1f7dcf0-small-202OK.PNG)
@@ -154,12 +154,12 @@ bool dateAfter = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-April-10T2
 4. Use the sample code in `Assets/Scenes/SteamScript.cs` and update it with your `DEV_KEY` and `APP_ID`.
 5. Initialize the SDK.
 
-```
+```c#
 AppsflyerSteamModule afm = new AppsflyerSteamModule("DEV_KEY", "STEAM_APP_ID");
 ```
 
-6. [Start](#public-void-startbool-skipfirst--false) the AppsFlyer integration.
-7. Report [in-app events](#public-void-logeventstring-event_name-dictionarystring-object-event_parameters).
+6. [Start](#start) the AppsFlyer integration.
+7. Report [in-app events](#logevent).
 
 ## Deleting Steam cloud saves (resetting the attribution)
 
