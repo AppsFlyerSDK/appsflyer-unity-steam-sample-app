@@ -6,11 +6,14 @@ using System.Collections.Generic;
 
 public class SteamScript : MonoBehaviour
 {
+    public string DEV_KEY;
+    public string STEAM_APP_ID;
+
     void Start()
     {
         if (SteamManager.Initialized)
         {
-            AppsflyerSteamModule afm = new AppsflyerSteamModule("DEV_KEY", "STEAM_APP_ID", this);
+            AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this);
             afm.Start();
 
             // set event name

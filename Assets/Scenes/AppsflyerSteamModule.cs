@@ -11,6 +11,7 @@ using System.Collections.Generic;
 
 public class AppsflyerSteamModule
 {
+    private bool isSandbox { get; }
     private string devkey { get; }
     private string appid { get; }
     private int af_counter { get; set; }
@@ -18,8 +19,14 @@ public class AppsflyerSteamModule
 
     public MonoBehaviour mono { get; }
 
-    public AppsflyerSteamModule(string devkey, string appid, MonoBehaviour mono)
+    public AppsflyerSteamModule(
+        string devkey,
+        string appid,
+        MonoBehaviour mono,
+        bool isSandbox = false
+    )
     {
+        this.isSandbox = isSandbox;
         this.devkey = devkey;
         this.appid = appid;
         this.mono = mono;
@@ -46,10 +53,9 @@ public class AppsflyerSteamModule
     {
         // setting the device ids and request body
         DeviceIDs deviceid = new DeviceIDs { type = "custom", value = af_device_id };
-        DeviceIDs[] deviceids = { deviceid };
         string steamIDInt = SteamUser.GetSteamID().ToString();
-        // DeviceIDs steamid = new DeviceIDs { type = "steamid" };
-        // DeviceIDs[] deviceids = { deviceid, steamid };
+        DeviceIDs steamid = new DeviceIDs { type = "steamid", value = steamIDInt };
+        DeviceIDs[] deviceids = { deviceid, steamid };
 
         string device_os_ver = SystemInfo.operatingSystem;
         if (device_os_ver.IndexOf(" (") > -1)
@@ -152,23 +158,33 @@ public class AppsflyerSteamModule
         // create auth token
         string auth = HmacSha256Digest(json, devkey);
 
+        // Debug.Log(auth);
+
         // define the url based on the request type
         string url;
         switch (REQ_TYPE)
         {
             case AppsflyerRequestType.FIRST_OPEN_REQUEST:
-                url = "https://events.appsflyer.com/v1.0/c2s/first_open/app/steam/" + appid;
+                url = isSandbox
+                    ? "https://sandbox-events.appsflyer.com/v1.0/c2s/first_open/app/steam/" + appid
+                    : "https://events.appsflyer.com/v1.0/c2s/first_open/app/steam/" + appid;
                 break;
             case AppsflyerRequestType.SESSION_REQUEST:
-                url = "https://events.appsflyer.com/v1.0/c2s/session/app/steam/" + appid;
+                url = isSandbox
+                    ? "https://sandbox-events.appsflyer.com/v1.0/c2s/session/app/steam/" + appid
+                    : "https://events.appsflyer.com/v1.0/c2s/session/app/steam/" + appid;
                 break;
             case AppsflyerRequestType.INAPP_EVENT_REQUEST:
-                url = "https://events.appsflyer.com/v1.0/c2s/inapp/app/steam/" + appid;
+                url = isSandbox
+                    ? "https://sandbox-events.appsflyer.com/v1.0/c2s/inapp/app/steam/" + appid
+                    : "https://events.appsflyer.com/v1.0/c2s/inapp/app/steam/" + appid;
                 break;
             default:
                 url = null;
                 break;
         }
+
+        // Debug.Log(url);
 
         // set the request body
         var uwr = new UnityWebRequest(url, "POST");
@@ -234,6 +250,7 @@ public class AppsflyerSteamModule
             Debug.Log(
                 "Please try to send the request to 'sandbox-events.appsflyer.com' instead of 'events.appsflyer.com' in order to debug."
             );
+            Debug.Log("error: " + uwr.error);
         }
     }
 
