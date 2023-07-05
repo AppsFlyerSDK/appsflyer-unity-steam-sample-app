@@ -43,7 +43,7 @@ AppsflyerSteamModule(string devkey, string appid, MonoBehaviour mono)
 **Usage**:
 
 ```c#
-AppsflyerSteamModule afm = new AppsflyerSteamModule("STEAM_APP_ID", "DEV_KEY", this);
+AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this);
 ```
 
 **Arguments**
@@ -110,7 +110,7 @@ string GetAppsFlyerUID()
 **Usage**:
 
 ```c#
-AppsflyerSteamModule afm = new AppsflyerSteamModule("DEV_KEY", "STEAM_APP_ID", this);
+AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this);
 afm.Start();
 string af_uid = afm.GetAppsFlyerUID();
 ```
@@ -155,7 +155,7 @@ bool dateAfter = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-April-10T2
 5. Initialize the SDK.
 
 ```c#
-AppsflyerSteamModule afm = new AppsflyerSteamModule("DEV_KEY", "STEAM_APP_ID");
+AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this);
 ```
 
 6. [Start](#start) the AppsFlyer integration.
