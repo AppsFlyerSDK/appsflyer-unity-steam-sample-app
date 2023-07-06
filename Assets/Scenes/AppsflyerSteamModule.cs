@@ -76,7 +76,7 @@ public class AppsflyerSteamModule
 
         RequestData req = new RequestData
         {
-            timestamp = DateTime.Now.ToString("yyyyMMddHHmmssffff"),
+            timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString(),
             device_os_version = device_os_ver,
             device_model = SystemInfo.deviceModel,
             app_version = "1.0.0", //TODO: Insert your app version

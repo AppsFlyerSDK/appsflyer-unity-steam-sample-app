@@ -32,18 +32,22 @@ We recommend you use this sample app as a reference for integrating the AppsFlye
 
 ### AppsflyerSteamModule
 
-This method receives your API key, Steam app ID and the parent MonoBehaviour and initializes the AppsFlyer Module.
+This method receives your API key, Steam app ID, the parent MonoBehaviour and a sandbox mode flag (optional, false by default) and initializes the AppsFlyer Module.
 
 **Method signature**
 
 ```c#
-AppsflyerSteamModule(string devkey, string appid, MonoBehaviour mono)
+AppsflyerSteamModule(string devkey, string appid, MonoBehaviour mono, bool isSandbox = false)
 ```
 
 **Usage**:
 
 ```c#
+// for regular init
 AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this);
+
+// for init in sandbox mode (reports the events to the sandbox endpoint)
+AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this, true);
 ```
 
 **Arguments**
