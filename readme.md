@@ -121,22 +121,30 @@ string af_uid = afm.GetAppsFlyerUID();
 
 ### IsInstallOlderThanDate
 
+This method receives a date string and returns true if the game folder creation date is older than the date string. The date string format is: "2023-03-13T10:00:00+00:00"
+
 **Method signature**
 
 ```c#
 bool IsInstallOlderThanDate(string datestring)
 ```
 
-This method receives a date string and returns true if the game folder creation date is older than the date string. The date string format is: "2023-January-01T23:12:34+00:00"
+**Usage**:
 
 ```c#
-// the creation date in this example is "2023-January-23T08:30:00+00:00"
+// the creation date in this example is ""2023-03-13T10:00:00+00:00""
 
-// will return false
-bool dateBefore = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-January-01T23:12:34+00:00");
+bool newerDate = afm.IsInstallOlderThanDate("2023-06-13T10:00:00+00:00");
+bool olderDate = afm.IsInstallOlderThanDate("2023-02-11T10:00:00+00:00");
 
 // will return true
-bool dateAfter = AppsflyerSteamModule()->IsInstallOlderThanDate("2023-April-10T23:12:34+00:00");
+Debug.Log("newerDate:" + (newerDate ? "true" : "false"));
+// will return false
+Debug.Log("olderDate:" + (olderDate ? "true" : "false"));
+
+// example usage with skipFirst:
+bool isInstallOlderThanDate = afm.IsInstallOlderThanDate("2023-02-11T10:00:00+00:00");
+afm.Start(isInstallOlderThanDate);
 ```
 
 ## Running the sample app
