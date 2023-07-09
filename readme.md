@@ -132,8 +132,7 @@ bool IsInstallOlderThanDate(string datestring)
 **Usage**:
 
 ```c#
-// the creation date in this example is ""2023-03-13T10:00:00+00:00""
-
+// the creation date in this example is "2023-03-23T08:30:00+00:00"
 bool newerDate = afm.IsInstallOlderThanDate("2023-06-13T10:00:00+00:00");
 bool olderDate = afm.IsInstallOlderThanDate("2023-02-11T10:00:00+00:00");
 
@@ -142,9 +141,10 @@ Debug.Log("newerDate:" + (newerDate ? "true" : "false"));
 // will return false
 Debug.Log("olderDate:" + (olderDate ? "true" : "false"));
 
-// example usage with skipFirst:
-bool isInstallOlderThanDate = afm.IsInstallOlderThanDate("2023-02-11T10:00:00+00:00");
-afm.Start(isInstallOlderThanDate);
+// example usage with skipFirst -
+// skipping if the install date is NOT older than the given date
+bool olderDate = afm.IsInstallOlderThanDate("2023-02-11T10:00:00+00:00");
+afm.Start(!olderDate);
 ```
 
 ## Running the sample app
