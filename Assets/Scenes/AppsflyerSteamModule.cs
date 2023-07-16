@@ -256,7 +256,7 @@ public class AppsflyerSteamModule
             }
             else
             {
-                Debug.Log("error detail: " + uwr.downloadHandler.text);
+                Debug.Log("error details: " + uwr.downloadHandler.text);
             }
         }
     }
