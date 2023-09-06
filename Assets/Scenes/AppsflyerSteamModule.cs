@@ -15,21 +15,26 @@ public class AppsflyerSteamModule
     private string devkey { get; }
     private string appid { get; }
     private int af_counter { get; set; }
+    private string cuid { get; set; }
     private string af_device_id { get; }
-
+    private bool isStopped { get; set; }
+    private bool collectSteamUid { get; set; }
     public MonoBehaviour mono { get; }
 
     public AppsflyerSteamModule(
         string devkey,
         string appid,
         MonoBehaviour mono,
-        bool isSandbox = false
+        bool isSandbox = false,
+        bool collectSteamUid = true
     )
     {
         this.isSandbox = isSandbox;
         this.devkey = devkey;
         this.appid = appid;
         this.mono = mono;
+        this.isStopped = true;
+        this.collectSteamUid = collectSteamUid;
 
         this.af_counter = PlayerPrefs.GetInt("af_counter");
         // Debug.Log("af_counter: " + af_counter);
@@ -49,14 +54,29 @@ public class AppsflyerSteamModule
         return this.af_device_id;
     }
 
+    public void SetCustomerUserId(string cuid)
+    {
+        if (!isStopped) return;
+        Debug.LogWarning("Customer User ID has been set");
+        this.cuid = cuid;
+    }
+
+    private DeviceIDs[] getDeviceIds(bool includeSteamUID) {
+        DeviceIDs deviceid = new DeviceIDs { type = "custom", value = af_device_id };
+        if (includeSteamUID) {    
+            string steamIDInt = SteamUser.GetSteamID().ToString();
+            DeviceIDs steamid = new DeviceIDs { type = "steamid", value = steamIDInt };
+            DeviceIDs[] deviceids = { deviceid, steamid };
+            return deviceids;
+        } else {
+            DeviceIDs[] deviceids = { deviceid };
+            return deviceids;
+        }
+    }
+
     private RequestData CreateRequestData()
     {
-        // setting the device ids and request body
-        DeviceIDs deviceid = new DeviceIDs { type = "custom", value = af_device_id };
-        string steamIDInt = SteamUser.GetSteamID().ToString();
-        DeviceIDs steamid = new DeviceIDs { type = "steamid", value = steamIDInt };
-        DeviceIDs[] deviceids = { deviceid, steamid };
-
+        // setting request body
         string device_os_ver = SystemInfo.operatingSystem;
         if (device_os_ver.IndexOf(" (") > -1)
             device_os_ver = device_os_ver.Replace(" (", "");
@@ -80,9 +100,10 @@ public class AppsflyerSteamModule
             device_os_version = device_os_ver,
             device_model = SystemInfo.deviceModel,
             app_version = "1.0.0", //TODO: Insert your app version
-            device_ids = deviceids,
+            device_ids = getDeviceIds(this.collectSteamUid),
             request_id = GenerateGuid(),
-            limit_ad_tracking = false
+            limit_ad_tracking = false,
+            customer_user_id = this.cuid
         };
         return req;
     }
@@ -90,6 +111,7 @@ public class AppsflyerSteamModule
     // report first open event to AppsFlyer (or session if counter > 2)
     public void Start(bool skipFirst = false)
     {
+        this.isStopped = false;
         // generating the request data
         RequestData req = CreateRequestData();
 
@@ -103,9 +125,20 @@ public class AppsflyerSteamModule
         mono.StartCoroutine(SendSteamPostReq(req, REQ_TYPE));
     }
 
+    public void Stop()
+    {
+        isStopped = true;
+        Debug.LogWarning("Appsflyer SDK has been stopped.");
+    }
+
     // report inapp event to AppsFlyer
     public void LogEvent(string event_name, Dictionary<string, object> event_parameters)
     {
+        if (isStopped) {
+            Debug.LogWarning("The SDK is stopped")
+            return;
+        }
+
         // generating the request data
         RequestData req = CreateRequestData();
         // setting the event name and value
@@ -302,6 +335,7 @@ class RequestData
     public string request_id;
     public bool limit_ad_tracking;
     public string event_name;
+    public string customer_user_id;
     public Dictionary<string, object> event_parameters;
 }
 
