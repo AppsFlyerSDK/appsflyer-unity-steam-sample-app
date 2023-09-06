@@ -38,7 +38,13 @@ This method receives your API key, Steam app ID, the parent MonoBehaviour and a 
 **Method signature**
 
 ```c#
-AppsflyerSteamModule(string devkey, string appid, MonoBehaviour mono, bool isSandbox = false)
+AppsflyerSteamModule(
+   string DEV_KEY,
+   string STEAM_APP_ID,
+   MonoBehaviour mono,
+   bool isSandbox = false,
+   bool collectSteamUid = true
+)
 ```
 
 **Usage**:
@@ -49,12 +55,19 @@ AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this)
 
 // for init in sandbox mode (reports the events to the sandbox endpoint)
 AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this, true);
+
+// for init without reporting steam_uid
+AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this, false, false);
+
 ```
 
 **Arguments**
 
-- `STEAM_APP_ID`: Found in the [SteamDB](https://steamdb.info/apps/).
-- `DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
+- `string DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
+- `string STEAM_APP_ID`: Found in the [SteamDB](https://steamdb.info/apps/).
+- `MonoBehaviour mono`:
+- `bool isSandbox`: Whether to activate sandbox mode. False by default.
+- `bool collectSteamUid`: Whether to collect Steam UID or not. True by default.
 
 ### Start
 
@@ -75,6 +88,27 @@ afm.Start();
 // with the flag
 bool skipFirst = [SOME_CONDITION];
 afm.Start(skipFirst);
+```
+
+### Stop
+
+Once this method is invoked, our SDK no longer communicates with our servers and stops functioning.
+Useful when implementing user opt-in/opt-out.
+
+**Method signature**
+
+```c#
+void Stop()
+```
+
+**Usage**:
+
+```c#
+// Starting the SDK
+afm.Start();
+// ...
+// Stopping the SDK, preventing further communication with AppsFlyer
+afm.Stop();
 ```
 
 ### LogEvent
@@ -118,6 +152,26 @@ string GetAppsFlyerUID()
 AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this);
 afm.Start();
 string af_uid = afm.GetAppsFlyerUID();
+```
+
+### SetCustomerUserId
+
+Setting your own customer ID enables you to cross-reference your own unique ID with AppsFlyer’s unique ID and other devices’ IDs.
+This ID is available in raw-data reports and in the Postback APIs for cross-referencing with your internal IDs.
+Can be used only before calling `Start()`.
+
+**Method signature**
+
+```c#
+void SetCustomerUserId(string cuid)
+```
+
+**Usage**:
+
+```c#
+AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this);
+afm.SetCustomerUserId("15667737-366d-4994-ac8b-653fe6b2be4a");
+afm.Start();
 ```
 
 ### IsInstallOlderThanDate

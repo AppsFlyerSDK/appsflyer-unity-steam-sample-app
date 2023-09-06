@@ -8,12 +8,14 @@ public class SteamScript : MonoBehaviour
 {
     public string DEV_KEY;
     public string STEAM_APP_ID;
+    public bool IS_SANDBOX;
+    public bool COLLECT_STEAM_UID = true;
 
     void Start()
     {
         if (SteamManager.Initialized)
         {
-            AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this);
+            AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this, IS_SANDBOX, COLLECT_STEAM_UID);
             afm.Start();
 
             // set event name
@@ -24,6 +26,8 @@ public class SteamScript : MonoBehaviour
             event_parameters.Add("af_price", 6.66);
             event_parameters.Add("af_revenue", 12.12);
             // send logEvent request
+            afm.LogEvent(event_name, event_parameters);
+            afm.Stop();
             afm.LogEvent(event_name, event_parameters);
         }
         else
