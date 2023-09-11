@@ -56,8 +56,11 @@ public class AppsflyerSteamModule
 
     public void SetCustomerUserId(string cuid)
     {
-        if (!isStopped) return;
-        Debug.LogWarning("Customer User ID has been set");
+        if (!isStopped) {
+            Debug.LogWarning("Cannot set CustomerUserID while the SDK has started.");
+            return; 
+        }
+        Debug.Log("Customer User ID has been set");
         this.cuid = cuid;
     }
 
@@ -135,7 +138,7 @@ public class AppsflyerSteamModule
     public void LogEvent(string event_name, Dictionary<string, object> event_parameters)
     {
         if (isStopped) {
-            Debug.LogWarning("The SDK is stopped")
+            Debug.LogWarning("The SDK is stopped");
             return;
         }
 
