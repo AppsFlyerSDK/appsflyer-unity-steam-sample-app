@@ -138,7 +138,7 @@ public class AppsflyerSteamModule
     public void LogEvent(string event_name, Dictionary<string, object> event_parameters)
     {
         if (isStopped) {
-            Debug.LogWarning("The SDK is stopped");
+            Debug.LogWarning("Cannot send LogEvent, the Appsflyer SDK is stopped");
             return;
         }
 
