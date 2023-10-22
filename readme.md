@@ -65,7 +65,7 @@ AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this,
 
 - `string DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
 - `string STEAM_APP_ID`: Found in the [SteamDB](https://steamdb.info/apps/).
-- `MonoBehaviour mono`:
+- `MonoBehaviour mono`: the parent MonoBehaviour.
 - `bool isSandbox`: Whether to activate sandbox mode. False by default. This option is for debugging. With the sandbox mode, AppsFlyer dashboard does not show the data. 
 - `bool collectSteamUid`: Whether to collect Steam UID or not. True by default.
 
