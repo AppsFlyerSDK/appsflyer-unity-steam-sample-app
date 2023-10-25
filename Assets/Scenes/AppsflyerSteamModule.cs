@@ -135,7 +135,7 @@ public class AppsflyerSteamModule
     }
 
     // report inapp event to AppsFlyer
-    public void LogEvent(string event_name, Dictionary<string, object> event_parameters)
+    public void LogEvent(string event_name, Dictionary<string, object> event_parameters, Dictionary<string, object> event_custom_parameters = null)
     {
         if (isStopped) {
             Debug.LogWarning("Cannot send LogEvent, the Appsflyer SDK is stopped");
@@ -147,6 +147,7 @@ public class AppsflyerSteamModule
         // setting the event name and value
         req.event_name = event_name;
         req.event_parameters = event_parameters;
+        req.event_custom_parameters = event_custom_parameters;
 
         // set request type
         AppsflyerRequestType REQ_TYPE = AppsflyerRequestType.INAPP_EVENT_REQUEST;
@@ -340,6 +341,7 @@ class RequestData
     public string event_name;
     public string customer_user_id;
     public Dictionary<string, object> event_parameters;
+    public Dictionary<string, object> event_custom_parameters;
 }
 
 [Serializable]

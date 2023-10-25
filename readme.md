@@ -47,6 +47,13 @@ AppsflyerSteamModule(
 )
 ```
 
+**Arguments**
+- `string DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
+- `string STEAM_APP_ID`: Found in the [SteamDB](https://steamdb.info/apps/).
+- `MonoBehaviour mono`: the parent MonoBehaviour.
+- `bool isSandbox`: Whether to activate sandbox mode. False by default. This option is for debugging. With the sandbox mode, AppsFlyer dashboard does not show the data.
+- `bool collectSteamUid`: Whether to collect Steam UID or not. True by default.
+
 **Usage**:
 
 ```c#
@@ -60,14 +67,6 @@ AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this,
 AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, STEAM_APP_ID, this, false, false);
 
 ```
-
-**Arguments**
-
-- `string DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
-- `string STEAM_APP_ID`: Found in the [SteamDB](https://steamdb.info/apps/).
-- `MonoBehaviour mono`: the parent MonoBehaviour.
-- `bool isSandbox`: Whether to activate sandbox mode. False by default. This option is for debugging. With the sandbox mode, AppsFlyer dashboard does not show the data. 
-- `bool collectSteamUid`: Whether to collect Steam UID or not. True by default.
 
 ### Start
 
@@ -112,13 +111,23 @@ afm.Stop();
 
 ### LogEvent
 
-This method receives an event name and JSON object and sends in-app events to AppsFlyer.
+This method receives an event name and JSON object and sends an in-app event to AppsFlyer.
 
 **Method signature**
 
 ```c#
-void LogEvent(string event_name, Dictionary<string, object> event_parameters)
+void LogEvent(
+      string event_name,
+      Dictionary<string, object> event_parameters,
+      Dictionary<string, object> event_custom_parameters = null
+   )
 ```
+
+**Arguments**:
+
+- `string event_name`: the name of the event.
+- `Dictionary<string, object> event_parameters`: dictionary object which contains the [predefined event parameters](https://dev.appsflyer.com/hc/docs/ctv-log-event-event-parameters).
+- `Dictionary<string, object> event_custom_parameters`: (non-mandatory): dictionary object which contains the any custom event parameters.
 
 **Usage**:
 
@@ -133,6 +142,10 @@ event_parameters.Add("af_revenue", 12.12);
 // send logEvent request
 afm.LogEvent(event_name, event_parameters);
 
+// send logEvent request with custom params
+Dictionary<string, object> event_custom_parameters = new Dictionary<string, object>();
+event_custom_parameters.Add("goodsName", "新人邀约购物日");
+afm.LogEvent(event_name, event_parameters, event_custom_parameters);
 ```
 
 ### GetAppsFlyerUID
