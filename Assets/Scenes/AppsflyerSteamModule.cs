@@ -296,6 +296,7 @@ public class AppsflyerSteamModule
                 Debug.Log("error details: " + uwr.downloadHandler.text);
             }
         }
+		uwr.Dispose();
     }
 
     // generate GUID for post request and AF id
