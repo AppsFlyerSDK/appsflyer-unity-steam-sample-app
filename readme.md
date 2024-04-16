@@ -50,6 +50,7 @@ AppsflyerSteamModule(
 ```
 
 **Arguments**
+
 - `string DEV_KEY`: Get from the marketer or [AppsFlyer HQ](https://support.appsflyer.com/hc/en-us/articles/211719806-App-settings-#general-app-settings).
 - `string STEAM_APP_ID`: Found in the [SteamDB](https://steamdb.info/apps/).
 - `MonoBehaviour mono`: the parent MonoBehaviour.
@@ -194,6 +195,33 @@ afm.SetCustomerUserId("15667737-366d-4994-ac8b-653fe6b2be4a");
 afm.Start();
 ```
 
+### SetSharingFilterForPartners
+
+This method lets you configure which partners should the SDK exclude from data-sharing. Partners that are excluded with this method will not receive data through postbacks, APIs, raw data reports, or any other means.
+
+**Method signature**
+
+```c#
+public void SetSharingFilterForPartners(List<string> sharingFilter)
+```
+
+**Arguments**:
+
+- `List<string> sharingFilter`: a list of partners to filter. For example: `new List<string>() {"partner1_int", "partner2_int"};`
+
+**Usage**:
+
+```c#
+AppsflyerSteamModule afm = new AppsflyerSteamModule(DEV_KEY, APP_ID, this);
+
+// set the sharing filter
+var sharingFilter = new List<string>() {"partner1_int", "partner2_int"};
+afm.SetSharingFilterForPartners(sharingFilter);
+
+// start the SDK (send firstopen/session request)
+afm.Start();
+```
+
 ### IsInstallOlderThanDate
 
 This method receives a date string and returns true if the game folder creation date is older than the date string. The date string format is: "2023-03-13T10:00:00+00:00"
@@ -209,6 +237,7 @@ bool IsInstallOlderThanDate(string datestring)
 - `string datestring`: Date string in `yyyy-mm-ddThh:mm:ss+hh:mm` format.
 
 **Usage**:
+
 <div id="skipFirstExample"></div>
 
 ```c#
