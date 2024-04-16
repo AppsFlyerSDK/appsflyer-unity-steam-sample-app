@@ -11,9 +11,10 @@ using System.Collections.Generic;
 
 public class AppsflyerSteamModule
 {
-    private bool isSandbox { get; }
     private string devkey { get; }
     private string appid { get; }
+    private bool isSandbox { get; }
+    private List<string> sharingFilter { get; set; }
     private int af_counter { get; set; }
     private string cuid { get; set; }
     private string af_device_id { get; }
@@ -33,6 +34,7 @@ public class AppsflyerSteamModule
         this.devkey = devkey;
         this.appid = appid;
         this.mono = mono;
+        this.sharingFilter = null;
         this.isStopped = true;
         this.collectSteamUid = collectSteamUid;
 
@@ -106,9 +108,20 @@ public class AppsflyerSteamModule
             device_ids = getDeviceIds(this.collectSteamUid),
             request_id = GenerateGuid(),
             limit_ad_tracking = false,
-            customer_user_id = this.cuid
+            customer_user_id = this.cuid,
+            sharing_filter = this.sharingFilter
         };
         return req;
+    }
+
+    public void SetSharingFilterForPartners(List<string> sharingFilter) {
+        this.sharingFilter = sharingFilter;
+        Debug.Log("Sharing filter for partners has been set");
+    }
+
+    public void SetSharingFilter(List<string> sharingFilter)
+    {
+        this.sharingFilter = sharingFilter;
     }
 
     // report first open event to AppsFlyer (or session if counter > 2)
@@ -190,7 +203,6 @@ public class AppsflyerSteamModule
             Newtonsoft.Json.Formatting.None,
             new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }
         );
-        // Debug.Log(json);
 
         // create auth token
         string auth = HmacSha256Digest(json, devkey);
@@ -341,6 +353,7 @@ class RequestData
     public bool limit_ad_tracking;
     public string event_name;
     public string customer_user_id;
+    public List<string> sharing_filter;
     public Dictionary<string, object> event_parameters;
     public Dictionary<string, object> event_custom_parameters;
 }

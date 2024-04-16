@@ -10,6 +10,7 @@ public class SteamScript : MonoBehaviour
     public string STEAM_APP_ID;
     public bool IS_SANDBOX;
     public bool COLLECT_STEAM_UID = true;
+    public List<string> SHARING_FILTER = null;
 
     void Start()
     {
@@ -20,6 +21,11 @@ public class SteamScript : MonoBehaviour
             
             // set CUID
             afm.SetCustomerUserId("testTEST12345");
+
+            // set the sharing filter, for this example: 
+            // SHARING_FILTER = new List<string>() {"partner1_int", "partner2_int"};
+            afm.SetSharingFilterForPartners(SHARING_FILTER);
+
             // start the SDK (send firstopen/session request)
             afm.Start();
 
